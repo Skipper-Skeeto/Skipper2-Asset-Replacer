@@ -100,10 +100,13 @@ namespace Skipper2AssetReplacer
 						{
 							byte[] widthBytes = new byte[2];
 							byte[] heightBytes = new byte[2];
+							
 							fs.Position = i + 18;
 							fs.Read(widthBytes, 0, 2);
 							fs.Position = i + 22;
 							fs.Read(heightBytes, 0, 2);
+							fs.Position = i + 26;
+							
 							imageWidth = BitConverter.ToInt16(widthBytes, 0);
 							imageHeight = BitConverter.ToInt16(heightBytes, 0);
 							//Console.WriteLine("Width: " + BitConverter.ToInt16(widthBytes, 0));
@@ -157,8 +160,18 @@ namespace Skipper2AssetReplacer
 				{
 					byte[] ImageData = File.ReadAllBytes(openFileDialog.FileName);
 					int targetByteSize = imageWidth * imageHeight + 1078;
-					Console.WriteLine(ImageData.Length);
-					// TODO: CHECK THAT COLOR COUNT MATCHES (SHOULD ALWAYS BE 256 COLOR BMP)
+					using(FileStream fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+					{
+						byte[] bitsperpixel = new byte[2];
+						fs.Position = 28;
+						fs.Read(bitsperpixel, 0, 2);
+						Console.WriteLine(BitConverter.ToInt16(bitsperpixel, 0));
+						if (BitConverter.ToInt16(bitsperpixel, 0) != 8)
+						{
+							MessageBox.Show("Replacement image must have 8 bits per pixel (256 colors)");
+							return;
+						}
+					}
 					if(ImageData.Length != targetByteSize)
 					{
 						DialogResult dialogResult = MessageBox.Show(string.Format("Image is not same size, are you sure you want to do this?\n{0}/{1} ({2} byte difference)", ImageData.Length, targetByteSize, targetByteSize - ImageData.Length), "File Size Mismatch", MessageBoxButtons.YesNo);
