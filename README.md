@@ -22,7 +22,7 @@ When you have found the image that you want to replace, simply click the 'replac
 - [x] Game image display
 - [x] Image replacing
 - [x] File size check
-- [ ] 256-Color check
+- [x] 256-Color check
 - [ ] Backup option
 - [ ] Add names describing each image, rather than just numbers
 - [ ] Audio replacing?
