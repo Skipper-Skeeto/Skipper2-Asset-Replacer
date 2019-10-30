@@ -29,13 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.Open = new System.Windows.Forms.Button();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.btnLeft = new System.Windows.Forms.Button();
 			this.btnRight = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
 			this.numIndex = new System.Windows.Forms.NumericUpDown();
 			this.Goto = new System.Windows.Forms.Button();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.imgPanel = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.numIndex)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -48,14 +47,6 @@
 			this.Open.Text = "Open mm2.dat";
 			this.Open.UseVisualStyleBackColor = true;
 			this.Open.Click += new System.EventHandler(this.Open_Click);
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Location = new System.Drawing.Point(12, 41);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(640, 420);
-			this.pictureBox1.TabIndex = 1;
-			this.pictureBox1.TabStop = false;
 			// 
 			// btnLeft
 			// 
@@ -109,21 +100,29 @@
 			this.Goto.UseVisualStyleBackColor = true;
 			this.Goto.Click += new System.EventHandler(this.Goto_Click);
 			// 
+			// imgPanel
+			// 
+			this.imgPanel.Location = new System.Drawing.Point(12, 41);
+			this.imgPanel.Name = "imgPanel";
+			this.imgPanel.Size = new System.Drawing.Size(640, 420);
+			this.imgPanel.TabIndex = 7;
+			this.imgPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.imgPanel_Paint);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(664, 472);
+			this.Controls.Add(this.imgPanel);
 			this.Controls.Add(this.Goto);
 			this.Controls.Add(this.numIndex);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnRight);
 			this.Controls.Add(this.btnLeft);
-			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.Open);
+			this.DoubleBuffered = true;
 			this.Name = "Form1";
 			this.Text = "Form1";
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numIndex)).EndInit();
 			this.ResumeLayout(false);
 
@@ -132,12 +131,12 @@
 		#endregion
 
 		private System.Windows.Forms.Button Open;
-		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button btnLeft;
 		private System.Windows.Forms.Button btnRight;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.NumericUpDown numIndex;
 		private System.Windows.Forms.Button Goto;
+		private System.Windows.Forms.Panel imgPanel;
 	}
 }
 

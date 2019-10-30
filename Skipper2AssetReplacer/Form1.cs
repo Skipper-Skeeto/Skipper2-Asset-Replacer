@@ -16,6 +16,7 @@ namespace Skipper2AssetReplacer
 		public Form1()
 		{
 			InitializeComponent();
+			DoubleBuffered = true;
 		}
 
 		private string FilePath = string.Empty;
@@ -43,8 +44,10 @@ namespace Skipper2AssetReplacer
 					FileData = File.ReadAllBytes(FilePath);
 					GetImage(0);
 				}
-			} 
+			}
 		}
+
+		private Bitmap bmp = new Bitmap(16, 16);
 
 		private void GetImage (int index)
 		{
@@ -53,14 +56,15 @@ namespace Skipper2AssetReplacer
 			//Console.WriteLine(offset);
 
 			FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-			byte[] bmpBytes = new byte[imageWidth * imageHeight + 5000];
-			Console.WriteLine(imageWidth * imageHeight);
+			byte[] bmpBytes = new byte[imageWidth * imageHeight + 54 + 2048];
+			Console.WriteLine(imageWidth * imageHeight + 54);
 			fs.Position = imageByteIndex;
 			fs.Read(bmpBytes, 0, bmpBytes.Length);
 			fs.Close();
 			using (var ms = new MemoryStream(bmpBytes))
 			{
-				pictureBox1.Image = new Bitmap(ms);
+				bmp = new Bitmap(ms);
+				imgPanel.Refresh();
 			}
 		}
 
@@ -159,13 +163,12 @@ namespace Skipper2AssetReplacer
 				if (openFileDialog.ShowDialog() == DialogResult.OK)
 				{
 					byte[] ImageData = File.ReadAllBytes(openFileDialog.FileName);
-					int targetByteSize = imageWidth * imageHeight + 1078;
+					int targetByteSize = imageWidth * imageHeight + 54 + 1024;
 					using(FileStream fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 					{
 						byte[] bitsperpixel = new byte[2];
 						fs.Position = 28;
 						fs.Read(bitsperpixel, 0, 2);
-						Console.WriteLine(BitConverter.ToInt16(bitsperpixel, 0));
 						if (BitConverter.ToInt16(bitsperpixel, 0) != 8)
 						{
 							MessageBox.Show("Replacement image must have 8 bits per pixel (256 colors)");
@@ -192,7 +195,6 @@ namespace Skipper2AssetReplacer
 		{
 			string newPath = FilePath.Replace(".dat", "_2.dat");
 			File.WriteAllBytes(newPath, FileData);
-			// Find width and height and set bytearray to (width * height + 1078)
 			using (FileStream fs = new FileStream(newPath, FileMode.Open, FileAccess.Write))
 			{
 				fs.Position = imageByteIndex;
@@ -205,6 +207,29 @@ namespace Skipper2AssetReplacer
 		{
 			imageIndex = (int)numIndex.Value;
 			GetImage(imageIndex);
+		}
+
+		private void imgPanel_Paint(object sender, PaintEventArgs e)
+		{
+			// Aspect ratio scaling
+			int width = bmp.Width, height = bmp.Height;
+			if(width > height)
+			{
+				float ratio = (float)bmp.Width / imgPanel.Width;
+				width = imgPanel.Width;
+				height = (int)(height / ratio);
+			} else if (width < height)
+			{
+				float ratio = (float)bmp.Height / imgPanel.Height;
+				width = (int)(width / ratio);
+				height = imgPanel.Height;
+			} else
+			{
+				height = imgPanel.Height;
+				width = height;
+			}
+			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			e.Graphics.DrawImage(bmp, 0, 0, width, height);
 		}
 	}
 }
